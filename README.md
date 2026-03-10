@@ -118,11 +118,37 @@ Example response:
 
 ```json
 {
-  "transactionId": "7c9d7f28-1a0f-4d6f-8a42-49bca79c9a9c",
+  "transactionId": "a14fa832-3786-406d-b33a-2277365bc546",
   "riskScore": 160,
   "riskLevel": "HIGH",
   "fraudSuspected": true,
-  "evaluatedAt": "2026-03-10T12:00:00Z"
+  "evaluatedAt": "2026-03-10T20:52:27.908556195Z",
+  "ruleResults": [
+    {
+      "ruleName": "LARGE_AMOUNT",
+      "triggered": true,
+      "score": 50,
+      "reason": "Transaction amount exceeds threshold of 10000"
+    },
+    {
+      "ruleName": "VELOCITY",
+      "triggered": false,
+      "score": 0,
+      "reason": "Rule passed"
+    },
+    {
+      "ruleName": "COUNTRY_MISMATCH",
+      "triggered": true,
+      "score": 40,
+      "reason": "Transaction country does not match account home country"
+    },
+    {
+      "ruleName": "BLACKLISTED_MERCHANT",
+      "triggered": true,
+      "score": 70,
+      "reason": "Merchant is blacklisted"
+    }
+  ]
 }
 ```
 
@@ -132,15 +158,66 @@ Example response:
 
 GET /transactions/{transactionId}/fraud-check
 
+Example response:
+```json
+{
+"transactionId": "a14fa832-3786-406d-b33a-2277365bc546",
+"riskScore": 160,
+"riskLevel": "HIGH",
+"fraudSuspected": true,
+"evaluatedAt": "2026-03-10T20:52:27.908556Z",
+"ruleResults": []
+}
+```
+
 ---
 
 ## Get Fraud Alerts
 
 GET /fraud-alerts
 
+Example response:
+
+```json
+[
+  {
+    "id": "8b5d8db9-8129-471f-94d9-793b425e88d1",
+    "transactionId": "a14fa832-3786-406d-b33a-2277365bc546",
+    "riskScore": 160,
+    "riskLevel": "HIGH",
+    "triggeredRules": [
+      "LARGE_AMOUNT",
+      "COUNTRY_MISMATCH",
+      "BLACKLISTED_MERCHANT"
+    ],
+    "createdAt": "2026-03-10T20:52:27.935983Z"
+  }
+]
+```
+
 Optional filter:
 
 GET /fraud-alerts?transactionId={transactionId}
+
+Example response:
+
+```json
+[
+  {
+    "id": "8b5d8db9-8129-471f-94d9-793b425e88d1",
+    "transactionId": "a14fa832-3786-406d-b33a-2277365bc546",
+    "riskScore": 160,
+    "riskLevel": "HIGH",
+    "triggeredRules": [
+      "LARGE_AMOUNT",
+      "COUNTRY_MISMATCH",
+      "BLACKLISTED_MERCHANT"
+    ],
+    "createdAt": "2026-03-10T20:52:27.935983Z"
+  }
+]
+```
+
 
 ---
 
