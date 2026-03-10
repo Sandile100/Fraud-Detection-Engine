@@ -1,0 +1,31 @@
+package za.co.capitec.adapters;
+
+import org.springframework.stereotype.Component;
+import za.co.capitec.domain.model.Transaction;
+import za.co.capitec.persistance.JpaTransactionRepository;
+import za.co.capitec.persistance.TransactionEntity;
+import za.co.capitec.ports.TransactionRepositoryPort;
+
+@Component
+public class TransactionRepositoryAdapter implements TransactionRepositoryPort {
+
+    private final JpaTransactionRepository repository;
+
+    public TransactionRepositoryAdapter(JpaTransactionRepository repository) {
+        this.repository = repository;
+    }
+
+    @Override
+    public void save(Transaction transaction) {
+        TransactionEntity entity = new TransactionEntity();
+        entity.setId(transaction.getId());
+        entity.setAccountId(transaction.getAccountId());
+        entity.setAmount(transaction.getAmount());
+        entity.setMerchant(transaction.getMerchant());
+        entity.setCountry(transaction.getCountry());
+        entity.setAccountHomeCountry(transaction.getAccountHomeCountry());
+        entity.setTimestamp(transaction.getTimestamp());
+
+        repository.save(entity);
+    }
+}
