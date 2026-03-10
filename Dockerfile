@@ -10,7 +10,7 @@ FROM eclipse-temurin:17-jre
 
 WORKDIR /app
 
-COPY --from=build /build/fraud-boot/target/fraud-boot-1.0.0-SNAPSHOT.jar app.jar
+COPY --from=build /build/fraud-boot/target/fraud-boot-1.0.0.jar app.jar
 
 EXPOSE 8080
 
