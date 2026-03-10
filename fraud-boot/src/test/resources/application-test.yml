@@ -3,7 +3,7 @@ spring:
     import: classpath:fraud-rules.yml
 
   datasource:
-    url: jdbc:h2:mem:frauddb;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false
+    url: jdbc:h2:mem:frauddb;MODE=PostgreSQL;DB_CLOSE_DELAY=-1
     username: sa
     password:
     driver-class-name: org.h2.Driver
@@ -20,3 +20,4 @@ spring:
 logging:
   level:
     root: WARN
+    org.flywaydb: DEBUG

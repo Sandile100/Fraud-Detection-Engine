@@ -2,8 +2,8 @@ package za.co.capitec.adapters;
 
 import org.springframework.stereotype.Component;
 import za.co.capitec.domain.model.Transaction;
-import za.co.capitec.persistance.JpaTransactionRepository;
-import za.co.capitec.persistance.TransactionEntity;
+import za.co.capitec.persistence.JpaTransactionRepository;
+import za.co.capitec.persistence.TransactionEntity;
 import za.co.capitec.ports.TransactionRepositoryPort;
 
 @Component

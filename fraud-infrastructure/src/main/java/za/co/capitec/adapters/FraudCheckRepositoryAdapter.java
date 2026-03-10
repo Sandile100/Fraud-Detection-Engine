@@ -3,8 +3,8 @@ package za.co.capitec.adapters;
 import org.springframework.stereotype.Component;
 import za.co.capitec.domain.model.FraudCheck;
 import za.co.capitec.domain.model.RiskLevel;
-import za.co.capitec.persistance.FraudCheckEntity;
-import za.co.capitec.persistance.JpaFraudCheckRepository;
+import za.co.capitec.persistence.FraudCheckEntity;
+import za.co.capitec.persistence.JpaFraudCheckRepository;
 import za.co.capitec.ports.FraudCheckRepositoryPort;
 
 import java.util.List;

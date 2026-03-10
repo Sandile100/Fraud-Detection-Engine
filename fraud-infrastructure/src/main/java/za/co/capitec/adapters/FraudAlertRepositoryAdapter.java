@@ -3,8 +3,8 @@ package za.co.capitec.adapters;
 import org.springframework.stereotype.Component;
 import za.co.capitec.domain.model.FraudAlert;
 import za.co.capitec.domain.model.RiskLevel;
-import za.co.capitec.persistance.FraudAlertEntity;
-import za.co.capitec.persistance.JpaFraudAlertRepository;
+import za.co.capitec.persistence.FraudAlertEntity;
+import za.co.capitec.persistence.JpaFraudAlertRepository;
 import za.co.capitec.ports.FraudAlertRepositoryPort;
 
 import java.util.Arrays;

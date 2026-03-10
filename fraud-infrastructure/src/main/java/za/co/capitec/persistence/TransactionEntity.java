@@ -1,4 +1,4 @@
-package za.co.capitec.persistance;
+package za.co.capitec.persistence;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

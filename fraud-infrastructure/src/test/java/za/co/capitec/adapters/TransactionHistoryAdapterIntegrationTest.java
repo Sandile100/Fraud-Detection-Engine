@@ -3,15 +3,17 @@ package za.co.capitec.adapters;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import za.co.capitec.domain.model.Transaction;
-import za.co.capitec.persistance.JpaTransactionRepository;
-import za.co.capitec.persistance.TransactionEntity;
+import za.co.capitec.persistence.JpaTransactionRepository;
+import za.co.capitec.persistence.TransactionEntity;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -20,10 +22,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-@Import(TransactionHistoryAdapter.class)
-@EnableJpaRepositories(basePackageClasses = JpaTransactionRepository.class)
-@EntityScan(basePackageClasses = TransactionEntity.class)
-@EnableConfigurationProperties
+@ContextConfiguration(classes = TransactionHistoryAdapterIntegrationTest.TestConfig.class)
 @TestPropertySource(properties = {
         "spring.jpa.hibernate.ddl-auto=create-drop"
 })
@@ -71,5 +70,13 @@ class TransactionHistoryAdapterIntegrationTest {
         entity.setAccountHomeCountry("ZA");
         entity.setTimestamp(timestamp);
         return entity;
+    }
+
+    @Configuration
+    @EnableAutoConfiguration
+    @EnableJpaRepositories(basePackageClasses = JpaTransactionRepository.class)
+    @EntityScan(basePackageClasses = TransactionEntity.class)
+    @Import(TransactionHistoryAdapter.class)
+    static class TestConfig {
     }
 }

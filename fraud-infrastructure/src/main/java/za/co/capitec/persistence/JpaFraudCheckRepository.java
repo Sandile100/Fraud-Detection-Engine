@@ -1,4 +1,4 @@
-package za.co.capitec.persistance;
+package za.co.capitec.persistence;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

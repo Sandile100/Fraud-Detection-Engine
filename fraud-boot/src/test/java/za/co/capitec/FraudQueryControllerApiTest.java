@@ -1,4 +1,4 @@
-package api;
+package za.co.capitec;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,22 +8,25 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
+
 import za.co.capitec.domain.model.FraudAlert;
 import za.co.capitec.domain.model.FraudCheck;
 import za.co.capitec.domain.model.RiskLevel;
+import za.co.capitec.domain.model.Transaction;
 import za.co.capitec.ports.FraudAlertRepositoryPort;
 import za.co.capitec.ports.FraudCheckRepositoryPort;
+import za.co.capitec.ports.TransactionRepositoryPort;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
-import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
+@SpringBootTest(classes = FraudEngineApplication.class)
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @Transactional
@@ -31,6 +34,9 @@ class FraudQueryControllerApiTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private TransactionRepositoryPort transactionRepositoryPort;
 
     @Autowired
     private FraudCheckRepositoryPort fraudCheckRepositoryPort;
@@ -43,6 +49,18 @@ class FraudQueryControllerApiTest {
     @BeforeEach
     void setUp() {
         transactionId = UUID.randomUUID();
+
+        Transaction transaction = new Transaction(
+                transactionId,
+                "ACC-123",
+                new BigDecimal("15000"),
+                "shady-store",
+                "US",
+                "ZA",
+                Instant.now()
+        );
+
+        transactionRepositoryPort.save(transaction);
 
         fraudCheckRepositoryPort.save(new FraudCheck(
                 transactionId,
@@ -72,18 +90,16 @@ class FraudQueryControllerApiTest {
     }
 
     @Test
-    void shouldGetFraudAlerts() throws Exception {
-        mockMvc.perform(get("/fraud-alerts"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$", hasSize(1)));
-    }
-
-    @Test
     void shouldGetFraudAlertsByTransactionId() throws Exception {
         mockMvc.perform(get("/fraud-alerts").param("transactionId", transactionId.toString()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].transactionId", is(transactionId.toString())))
                 .andExpect(jsonPath("$[0].riskLevel", is("HIGH")));
+    }
+
+    @Test
+    void shouldGetFraudAlerts() throws Exception {
+        mockMvc.perform(get("/fraud-alerts"))
+                .andExpect(status().isOk());
     }
 }

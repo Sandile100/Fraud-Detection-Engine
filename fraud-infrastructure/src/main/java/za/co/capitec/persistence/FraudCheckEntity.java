@@ -1,4 +1,4 @@
-package za.co.capitec.persistance;
+package za.co.capitec.persistence;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,13 +9,10 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Entity
-@Table(name = "fraud_alerts")
-public class FraudAlertEntity {
+@Table(name = "fraud_checks")
+public class FraudCheckEntity {
 
     @Id
-    private UUID id;
-
-    @Column(name = "transaction_id", nullable = false)
     private UUID transactionId;
 
     @Column(name = "risk_score", nullable = false)
@@ -24,19 +21,11 @@ public class FraudAlertEntity {
     @Column(name = "risk_level", nullable = false, length = 20)
     private String riskLevel;
 
-    @Column(name = "triggered_rules", nullable = false, length = 2000)
-    private String triggeredRules;
+    @Column(name = "evaluated_at", nullable = false)
+    private Instant evaluatedAt;
 
-    @Column(name = "created_at", nullable = false)
-    private Instant createdAt;
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
+    @Column(name = "suspected_fraud", nullable = false)
+    private boolean suspectedFraud;
 
     public UUID getTransactionId() {
         return transactionId;
@@ -62,19 +51,19 @@ public class FraudAlertEntity {
         this.riskLevel = riskLevel;
     }
 
-    public String getTriggeredRules() {
-        return triggeredRules;
+    public Instant getEvaluatedAt() {
+        return evaluatedAt;
     }
 
-    public void setTriggeredRules(String triggeredRules) {
-        this.triggeredRules = triggeredRules;
+    public void setEvaluatedAt(Instant evaluatedAt) {
+        this.evaluatedAt = evaluatedAt;
     }
 
-    public Instant getCreatedAt() {
-        return createdAt;
+    public boolean isSuspectedFraud() {
+        return suspectedFraud;
     }
 
-    public void setCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
+    public void setSuspectedFraud(boolean suspectedFraud) {
+        this.suspectedFraud = suspectedFraud;
     }
 }

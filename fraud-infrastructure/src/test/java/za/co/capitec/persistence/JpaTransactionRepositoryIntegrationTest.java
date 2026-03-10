@@ -1,4 +1,4 @@
-package za.co.capitec.persistance;
+package za.co.capitec.persistence;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

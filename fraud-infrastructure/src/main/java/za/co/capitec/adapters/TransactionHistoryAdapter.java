@@ -3,7 +3,7 @@ package za.co.capitec.adapters;
 import org.springframework.stereotype.Component;
 import za.co.capitec.domain.model.Transaction;
 import za.co.capitec.domain.rules.TransactionHistoryPort;
-import za.co.capitec.persistance.JpaTransactionRepository;
+import za.co.capitec.persistence.JpaTransactionRepository;
 
 import java.time.Instant;
 

@@ -10,17 +10,29 @@ CREATE TABLE transactions (
 
 CREATE TABLE fraud_checks (
     transaction_id UUID PRIMARY KEY,
-    risk_score INT NOT NULL,
+    risk_score INTEGER NOT NULL,
     risk_level VARCHAR(20) NOT NULL,
     evaluated_at TIMESTAMP NOT NULL,
-    suspected_fraud BOOLEAN NOT NULL
+    suspected_fraud BOOLEAN NOT NULL,
+    CONSTRAINT fk_fraud_check_transaction
+        FOREIGN KEY (transaction_id)
+        REFERENCES transactions(id)
 );
 
 CREATE TABLE fraud_alerts (
     id UUID PRIMARY KEY,
     transaction_id UUID NOT NULL,
-    risk_score INT NOT NULL,
+    risk_score INTEGER NOT NULL,
     risk_level VARCHAR(20) NOT NULL,
     triggered_rules VARCHAR(2000) NOT NULL,
-    created_at TIMESTAMP NOT NULL
+    created_at TIMESTAMP NOT NULL,
+    CONSTRAINT fk_fraud_alert_transaction
+        FOREIGN KEY (transaction_id)
+        REFERENCES transactions(id)
 );
+
+CREATE INDEX idx_transactions_account_timestamp
+    ON transactions(account_id, timestamp);
+
+CREATE INDEX idx_fraud_alerts_transaction
+    ON fraud_alerts(transaction_id);

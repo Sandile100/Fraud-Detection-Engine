@@ -12,7 +12,7 @@ import za.co.capitec.usecases.GetFraudAlertsUseCase;
 import za.co.capitec.usecases.GetFraudCheckUseCase;
 import za.co.capitec.usecases.ProcessTransactionUseCase;
 
-@SpringBootApplication(scanBasePackages = "za.co.capitec")
+@SpringBootApplication
 public class FraudEngineApplication {
 
     public static void main(String[] args) {
