@@ -14,12 +14,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-public class ProcessTransactionUseCase {
-
-    private final TransactionRepositoryPort transactionRepositoryPort;
-    private final FraudCheckRepositoryPort fraudCheckRepositoryPort;
-    private final FraudAlertRepositoryPort fraudAlertRepositoryPort;
-    private final FraudDetectionService fraudDetectionService;
+public record ProcessTransactionUseCase(TransactionRepositoryPort transactionRepositoryPort,
+                                        FraudCheckRepositoryPort fraudCheckRepositoryPort,
+                                        FraudAlertRepositoryPort fraudAlertRepositoryPort,
+                                        FraudDetectionService fraudDetectionService) {
 
     public ProcessTransactionUseCase(
             TransactionRepositoryPort transactionRepositoryPort,

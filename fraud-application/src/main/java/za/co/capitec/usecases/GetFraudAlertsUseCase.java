@@ -7,9 +7,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-public class GetFraudAlertsUseCase {
-
-    private final FraudAlertRepositoryPort fraudAlertRepositoryPort;
+public record GetFraudAlertsUseCase(FraudAlertRepositoryPort fraudAlertRepositoryPort) {
 
     public GetFraudAlertsUseCase(FraudAlertRepositoryPort fraudAlertRepositoryPort) {
         this.fraudAlertRepositoryPort = Objects.requireNonNull(

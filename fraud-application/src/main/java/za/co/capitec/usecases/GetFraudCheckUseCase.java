@@ -7,9 +7,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
-public class GetFraudCheckUseCase {
-
-    private final FraudCheckRepositoryPort fraudCheckRepositoryPort;
+public record GetFraudCheckUseCase(FraudCheckRepositoryPort fraudCheckRepositoryPort) {
 
     public GetFraudCheckUseCase(FraudCheckRepositoryPort fraudCheckRepositoryPort) {
         this.fraudCheckRepositoryPort = Objects.requireNonNull(
