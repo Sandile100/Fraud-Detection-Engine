@@ -24,19 +24,19 @@ HTTP Request
 
 ## Modules
 
-fraud-domain
+**fraud-domain**:
 Business rules and domain models
 
-fraud-application
+**fraud-application**:
 Use cases and port interfaces
 
-fraud-infrastructure
+**fraud-infrastructure**:
 Persistence adapters (JPA + database)
 
-fraud-api
+**fraud-api**:
 REST controllers and DTOs
 
-fraud-boot
+**fraud-boot**:
 Spring Boot application + configuration
 
 This structure ensures:
@@ -290,9 +290,7 @@ curl http://localhost:8080/transactions/{transactionId}/fraud-check
 
 Flyway migrations create:
 
-transactions
-fraud_checks
-fraud_alerts
+transactions,fraud_checks and fraud_alerts tables
 
 ---
 
@@ -362,13 +360,13 @@ If more than 5 transactions occur within 60 seconds, the rule triggers.
 
 # Technology Stack
 
-Java 17
-Spring Boot
-Spring Data JPA
-PostgreSQL
-Flyway
-Docker
-JUnit 5
+Java 17,
+Spring Boot,
+Spring Data JPA,
+PostgreSQL,
+Flyway,
+Docker,
+JUnit 5 and 
 MockMvc
 
 ---
@@ -392,6 +390,5 @@ MockMvc
 ---
 
 # Author
-
 Sandile Mbatha
 
