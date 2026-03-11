@@ -30,7 +30,7 @@ public class LargeAmountRule implements FraudRule {
 
     @Override
     public RuleResult evaluate(Transaction transaction) {
-        if (transaction.getAmount().compareTo(threshold) > 0) {
+        if (transaction.amount().compareTo(threshold) > 0) {
             return RuleResult.triggered(
                     getName(),
                     score,

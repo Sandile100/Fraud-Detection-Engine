@@ -10,9 +10,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 
-public class FraudDetectionService {
-
-    private final List<FraudRule> rules;
+public record FraudDetectionService(List<FraudRule> rules) {
 
     public FraudDetectionService(List<FraudRule> rules) {
         this.rules = List.copyOf(Objects.requireNonNull(rules, "rules must not be null"));
@@ -24,14 +22,14 @@ public class FraudDetectionService {
                 .toList();
 
         int riskScore = results.stream()
-                .filter(RuleResult::isTriggered)
-                .mapToInt(RuleResult::getScore)
+                .filter(RuleResult::triggered)
+                .mapToInt(RuleResult::score)
                 .sum();
 
         RiskLevel riskLevel = determineRiskLevel(riskScore);
 
         return new FraudCheck(
-                transaction.getId(),
+                transaction.id(),
                 riskScore,
                 riskLevel,
                 results,

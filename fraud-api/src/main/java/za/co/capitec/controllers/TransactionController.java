@@ -40,17 +40,17 @@ public class TransactionController {
 
     private FraudCheckResponse toResponse(FraudCheck fraudCheck) {
         return new FraudCheckResponse(
-                fraudCheck.getTransactionId(),
-                fraudCheck.getRiskScore(),
-                fraudCheck.getRiskLevel().name(),
+                fraudCheck.transactionId(),
+                fraudCheck.riskScore(),
+                fraudCheck.riskLevel().name(),
                 fraudCheck.isFraudSuspected(),
-                fraudCheck.getEvaluatedAt(),
-                fraudCheck.getRuleResults().stream()
+                fraudCheck.evaluatedAt(),
+                fraudCheck.ruleResults().stream()
                         .map(ruleResult -> new RuleResultResponse(
-                                ruleResult.getRuleName(),
-                                ruleResult.isTriggered(),
-                                ruleResult.getScore(),
-                                ruleResult.getReason()
+                                ruleResult.ruleName(),
+                                ruleResult.triggered(),
+                                ruleResult.score(),
+                                ruleResult.reason()
                         ))
                         .toList()
         );

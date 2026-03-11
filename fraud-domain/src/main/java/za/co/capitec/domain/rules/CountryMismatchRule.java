@@ -3,15 +3,12 @@ package za.co.capitec.domain.rules;
 import za.co.capitec.domain.model.RuleResult;
 import za.co.capitec.domain.model.Transaction;
 
-public class CountryMismatchRule implements FraudRule {
+public record CountryMismatchRule(int score) implements FraudRule {
 
-    private final int score;
-
-    public CountryMismatchRule(int score) {
+    public CountryMismatchRule {
         if (score <= 0) {
             throw new IllegalArgumentException("score must be greater than zero");
         }
-        this.score = score;
     }
 
     @Override
@@ -21,7 +18,7 @@ public class CountryMismatchRule implements FraudRule {
 
     @Override
     public RuleResult evaluate(Transaction transaction) {
-        if (!transaction.getCountry().equalsIgnoreCase(transaction.getAccountHomeCountry())) {
+        if (!transaction.country().equalsIgnoreCase(transaction.accountHomeCountry())) {
             return RuleResult.triggered(
                     getName(),
                     score,

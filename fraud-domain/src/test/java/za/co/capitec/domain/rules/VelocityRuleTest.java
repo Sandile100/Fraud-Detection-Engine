@@ -30,9 +30,9 @@ class VelocityRuleTest {
 
         RuleResult result = rule.evaluate(transaction);
 
-        assertTrue(result.isTriggered());
-        assertEquals(30, result.getScore());
-        assertEquals("VELOCITY", result.getRuleName());
+        assertTrue(result.triggered());
+        assertEquals(30, result.score());
+        assertEquals("VELOCITY", result.ruleName());
     }
 
     @Test
@@ -53,7 +53,7 @@ class VelocityRuleTest {
 
         RuleResult result = rule.evaluate(transaction);
 
-        assertFalse(result.isTriggered());
-        assertEquals(0, result.getScore());
+        assertFalse(result.triggered());
+        assertEquals(0, result.score());
     }
 }

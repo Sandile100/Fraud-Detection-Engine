@@ -18,11 +18,11 @@ public class TransactionHistoryAdapter implements TransactionHistoryPort {
 
     @Override
     public long countTransactionsForAccountWithinSeconds(Transaction transaction, long seconds) {
-        Instant toTimestamp = transaction.getTimestamp();
+        Instant toTimestamp = transaction.timestamp();
         Instant fromTimestamp = toTimestamp.minusSeconds(seconds);
 
         return transactionRepository.countTransactionsWithinWindow(
-                transaction.getAccountId(),
+                transaction.accountId(),
                 fromTimestamp,
                 toTimestamp
         );

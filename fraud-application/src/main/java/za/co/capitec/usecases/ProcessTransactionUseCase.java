@@ -49,16 +49,16 @@ public class ProcessTransactionUseCase {
     }
 
     private FraudAlert toFraudAlert(FraudCheck fraudCheck) {
-        List<String> triggeredRules = fraudCheck.getRuleResults().stream()
-                .filter(RuleResult::isTriggered)
-                .map(RuleResult::getRuleName)
+        List<String> triggeredRules = fraudCheck.ruleResults().stream()
+                .filter(RuleResult::triggered)
+                .map(RuleResult::ruleName)
                 .toList();
 
         return new FraudAlert(
                 UUID.randomUUID(),
-                fraudCheck.getTransactionId(),
-                fraudCheck.getRiskScore(),
-                fraudCheck.getRiskLevel(),
+                fraudCheck.transactionId(),
+                fraudCheck.riskScore(),
+                fraudCheck.riskLevel(),
                 triggeredRules,
                 Instant.now()
         );

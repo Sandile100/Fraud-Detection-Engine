@@ -2,14 +2,9 @@ package za.co.capitec.domain.model;
 
 import java.util.Objects;
 
-public class RuleResult {
+public record RuleResult(String ruleName, boolean triggered, int score, String reason) {
 
-    private final String ruleName;
-    private final boolean triggered;
-    private final int score;
-    private final String reason;
-
-    private RuleResult(String ruleName, boolean triggered, int score, String reason) {
+    public RuleResult(String ruleName, boolean triggered, int score, String reason) {
         this.ruleName = Objects.requireNonNull(ruleName, "ruleName must not be null");
         this.triggered = triggered;
         this.score = score;
@@ -25,21 +20,5 @@ public class RuleResult {
 
     public static RuleResult passed(String ruleName) {
         return new RuleResult(ruleName, false, 0, "Rule passed");
-    }
-
-    public String getRuleName() {
-        return ruleName;
-    }
-
-    public boolean isTriggered() {
-        return triggered;
-    }
-
-    public int getScore() {
-        return score;
-    }
-
-    public String getReason() {
-        return reason;
     }
 }

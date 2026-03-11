@@ -5,15 +5,8 @@ import java.time.Instant;
 import java.util.Objects;
 import java.util.UUID;
 
-public class Transaction {
-
-    private final UUID id;
-    private final String accountId;
-    private final BigDecimal amount;
-    private final String merchant;
-    private final String country;
-    private final String accountHomeCountry;
-    private final Instant timestamp;
+public record Transaction(UUID id, String accountId, BigDecimal amount, String merchant, String country,
+                          String accountHomeCountry, Instant timestamp) {
 
     public Transaction(
             UUID id,
@@ -35,33 +28,5 @@ public class Transaction {
         if (amount.signum() < 0) {
             throw new IllegalArgumentException("amount must be zero or positive");
         }
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public String getAccountId() {
-        return accountId;
-    }
-
-    public BigDecimal getAmount() {
-        return amount;
-    }
-
-    public String getMerchant() {
-        return merchant;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public String getAccountHomeCountry() {
-        return accountHomeCountry;
-    }
-
-    public Instant getTimestamp() {
-        return timestamp;
     }
 }

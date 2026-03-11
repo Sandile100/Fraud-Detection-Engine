@@ -28,9 +28,9 @@ class LargeAmountRuleTest {
 
         RuleResult result = rule.evaluate(transaction);
 
-        assertTrue(result.isTriggered());
-        assertEquals(50, result.getScore());
-        assertEquals("LARGE_AMOUNT", result.getRuleName());
+        assertTrue(result.triggered());
+        assertEquals(50, result.score());
+        assertEquals("LARGE_AMOUNT", result.ruleName());
     }
 
     @Test
@@ -49,8 +49,8 @@ class LargeAmountRuleTest {
 
         RuleResult result = rule.evaluate(transaction);
 
-        assertFalse(result.isTriggered());
-        assertEquals(0, result.getScore());
-        assertEquals("LARGE_AMOUNT", result.getRuleName());
+        assertFalse(result.triggered());
+        assertEquals(0, result.score());
+        assertEquals("LARGE_AMOUNT", result.ruleName());
     }
 }

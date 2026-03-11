@@ -28,9 +28,9 @@ class CountryMismatchRuleTest {
 
         RuleResult result = rule.evaluate(transaction);
 
-        assertTrue(result.isTriggered());
-        assertEquals(40, result.getScore());
-        assertEquals("COUNTRY_MISMATCH", result.getRuleName());
+        assertTrue(result.triggered());
+        assertEquals(40, result.score());
+        assertEquals("COUNTRY_MISMATCH", result.ruleName());
     }
 
     @Test
@@ -49,7 +49,7 @@ class CountryMismatchRuleTest {
 
         RuleResult result = rule.evaluate(transaction);
 
-        assertFalse(result.isTriggered());
-        assertEquals(0, result.getScore());
+        assertFalse(result.triggered());
+        assertEquals(0, result.score());
     }
 }

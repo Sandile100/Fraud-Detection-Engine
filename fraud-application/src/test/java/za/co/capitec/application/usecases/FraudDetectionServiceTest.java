@@ -42,10 +42,10 @@ class FraudDetectionServiceTest {
 
         FraudCheck fraudCheck = service.evaluate(transaction);
 
-        assertEquals(160, fraudCheck.getRiskScore());
-        assertEquals(RiskLevel.HIGH, fraudCheck.getRiskLevel());
+        assertEquals(160, fraudCheck.riskScore());
+        assertEquals(RiskLevel.HIGH, fraudCheck.riskLevel());
         assertTrue(fraudCheck.isFraudSuspected());
-        assertEquals(3, fraudCheck.getRuleResults().size());
+        assertEquals(3, fraudCheck.ruleResults().size());
     }
 
     @Test
@@ -69,8 +69,8 @@ class FraudDetectionServiceTest {
 
         FraudCheck fraudCheck = service.evaluate(transaction);
 
-        assertEquals(0, fraudCheck.getRiskScore());
-        assertEquals(RiskLevel.LOW, fraudCheck.getRiskLevel());
+        assertEquals(0, fraudCheck.riskScore());
+        assertEquals(RiskLevel.LOW, fraudCheck.riskLevel());
         assertFalse(fraudCheck.isFraudSuspected());
     }
 
@@ -93,10 +93,10 @@ class FraudDetectionServiceTest {
 
         FraudCheck result = service.evaluate(transaction);
 
-        assertEquals(90, result.getRiskScore());
-        assertEquals(RiskLevel.HIGH, result.getRiskLevel());
+        assertEquals(90, result.riskScore());
+        assertEquals(RiskLevel.HIGH, result.riskLevel());
         assertTrue(result.isFraudSuspected());
-        assertEquals(2, result.getRuleResults().size());
+        assertEquals(2, result.ruleResults().size());
     }
 }
 
