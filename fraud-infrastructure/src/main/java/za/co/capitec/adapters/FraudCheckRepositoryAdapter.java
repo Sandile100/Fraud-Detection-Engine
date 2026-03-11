@@ -33,10 +33,10 @@ public class FraudCheckRepositoryAdapter implements FraudCheckRepositoryPort {
 
     private FraudCheckEntity toEntity(FraudCheck fraudCheck) {
         FraudCheckEntity entity = new FraudCheckEntity();
-        entity.setTransactionId(fraudCheck.getTransactionId());
-        entity.setRiskScore(fraudCheck.getRiskScore());
-        entity.setRiskLevel(fraudCheck.getRiskLevel().name());
-        entity.setEvaluatedAt(fraudCheck.getEvaluatedAt());
+        entity.setTransactionId(fraudCheck.transactionId());
+        entity.setRiskScore(fraudCheck.riskScore());
+        entity.setRiskLevel(fraudCheck.riskLevel().name());
+        entity.setEvaluatedAt(fraudCheck.evaluatedAt());
         entity.setSuspectedFraud(fraudCheck.isFraudSuspected());
         return entity;
     }

@@ -32,9 +32,9 @@ class BlacklistedMerchantRuleTest {
 
         RuleResult result = rule.evaluate(transaction);
 
-        assertTrue(result.isTriggered());
-        assertEquals(70, result.getScore());
-        assertEquals("BLACKLISTED_MERCHANT", result.getRuleName());
+        assertTrue(result.triggered());
+        assertEquals(70, result.score());
+        assertEquals("BLACKLISTED_MERCHANT", result.ruleName());
     }
 
     @Test
@@ -56,7 +56,7 @@ class BlacklistedMerchantRuleTest {
 
         RuleResult result = rule.evaluate(transaction);
 
-        assertFalse(result.isTriggered());
-        assertEquals(0, result.getScore());
+        assertFalse(result.triggered());
+        assertEquals(0, result.score());
     }
 }

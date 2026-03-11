@@ -18,13 +18,13 @@ public class TransactionRepositoryAdapter implements TransactionRepositoryPort {
     @Override
     public void save(Transaction transaction) {
         TransactionEntity entity = new TransactionEntity();
-        entity.setId(transaction.getId());
-        entity.setAccountId(transaction.getAccountId());
-        entity.setAmount(transaction.getAmount());
-        entity.setMerchant(transaction.getMerchant());
-        entity.setCountry(transaction.getCountry());
-        entity.setAccountHomeCountry(transaction.getAccountHomeCountry());
-        entity.setTimestamp(transaction.getTimestamp());
+        entity.setId(transaction.id());
+        entity.setAccountId(transaction.accountId());
+        entity.setAmount(transaction.amount());
+        entity.setMerchant(transaction.merchant());
+        entity.setCountry(transaction.country());
+        entity.setAccountHomeCountry(transaction.accountHomeCountry());
+        entity.setTimestamp(transaction.timestamp());
 
         repository.save(entity);
     }

@@ -43,12 +43,12 @@ public class FraudAlertRepositoryAdapter implements FraudAlertRepositoryPort {
 
     private FraudAlertEntity toEntity(FraudAlert fraudAlert) {
         FraudAlertEntity entity = new FraudAlertEntity();
-        entity.setId(fraudAlert.getId());
-        entity.setTransactionId(fraudAlert.getTransactionId());
-        entity.setRiskScore(fraudAlert.getRiskScore());
-        entity.setRiskLevel(fraudAlert.getRiskLevel().name());
-        entity.setTriggeredRules(String.join(",", fraudAlert.getTriggeredRules()));
-        entity.setCreatedAt(fraudAlert.getCreatedAt());
+        entity.setId(fraudAlert.id());
+        entity.setTransactionId(fraudAlert.transactionId());
+        entity.setRiskScore(fraudAlert.riskScore());
+        entity.setRiskLevel(fraudAlert.riskLevel().name());
+        entity.setTriggeredRules(String.join(",", fraudAlert.triggeredRules()));
+        entity.setCreatedAt(fraudAlert.createdAt());
         return entity;
     }
 

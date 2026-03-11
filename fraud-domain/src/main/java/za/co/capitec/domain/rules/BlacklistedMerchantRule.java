@@ -7,10 +7,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class BlacklistedMerchantRule implements FraudRule {
-
-    private final Set<String> blacklistedMerchants;
-    private final int score;
+public record BlacklistedMerchantRule(Set<String> blacklistedMerchants, int score) implements FraudRule {
 
     public BlacklistedMerchantRule(Set<String> blacklistedMerchants, int score) {
         this.blacklistedMerchants = Objects.requireNonNull(blacklistedMerchants, "blacklistedMerchants must not be null")
@@ -32,7 +29,7 @@ public class BlacklistedMerchantRule implements FraudRule {
 
     @Override
     public RuleResult evaluate(Transaction transaction) {
-        String merchant = transaction.getMerchant().trim().toLowerCase();
+        String merchant = transaction.merchant().trim().toLowerCase();
 
         if (blacklistedMerchants.contains(merchant)) {
             return RuleResult.triggered(
