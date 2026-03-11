@@ -1,6 +1,8 @@
 package za.co.capitec;
 
 
+import io.opentelemetry.api.GlobalOpenTelemetry;
+import io.opentelemetry.api.trace.Tracer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -24,13 +26,15 @@ public class FraudEngineApplication {
             TransactionRepositoryPort transactionRepositoryPort,
             FraudCheckRepositoryPort fraudCheckRepositoryPort,
             FraudAlertRepositoryPort fraudAlertRepositoryPort,
-            FraudDetectionService fraudDetectionService
+            FraudDetectionService fraudDetectionService,
+            Tracer tracer
     ) {
         return new ProcessTransactionUseCase(
                 transactionRepositoryPort,
                 fraudCheckRepositoryPort,
                 fraudAlertRepositoryPort,
-                fraudDetectionService
+                fraudDetectionService,
+                tracer
         );
     }
 
@@ -42,5 +46,9 @@ public class FraudEngineApplication {
     @Bean
     GetFraudAlertsUseCase getFraudAlertsUseCase(FraudAlertRepositoryPort fraudAlertRepositoryPort) {
         return new GetFraudAlertsUseCase(fraudAlertRepositoryPort);
+    }
+    @Bean
+    Tracer tracer() {
+        return GlobalOpenTelemetry.getTracer("fraud-engine");
     }
 }

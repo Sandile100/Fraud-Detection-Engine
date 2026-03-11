@@ -16,15 +16,25 @@ services:
       timeout: 5s
       retries: 5
 
+  lgtm:
+    image: grafana/otel-lgtm
+    container_name: fraud-lgtm
+    ports:
+      - "3000:3000"
+      - "4317:4317"
+      - "4318:4318"
+
   fraud-engine:
     build: .
     container_name: fraud-engine
     depends_on:
-      postgres:
-        condition: service_healthy
+      - lgtm
+      - postgres
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/frauddb
       SPRING_DATASOURCE_USERNAME: fraud
       SPRING_DATASOURCE_PASSWORD: fraud
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://lgtm:4318
+      OTEL_EXPORTER_OTLP_PROTOCOL: http/protobuf
     ports:
       - "8080:8080"

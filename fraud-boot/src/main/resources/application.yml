@@ -26,6 +26,19 @@ spring:
 server:
   port: 8080
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+
+otel:
+  service:
+    name: fraud-engine
+  exporter:
+    otlp:
+      endpoint: http://localhost:4318
+      protocol: http/protobuf
 logging:
   level:
     root: INFO
