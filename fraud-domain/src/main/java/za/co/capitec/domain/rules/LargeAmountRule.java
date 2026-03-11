@@ -6,10 +6,7 @@ import za.co.capitec.domain.model.Transaction;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-public class LargeAmountRule implements FraudRule {
-
-    private final BigDecimal threshold;
-    private final int score;
+public record LargeAmountRule(BigDecimal threshold, int score) implements FraudRule {
 
     public LargeAmountRule(BigDecimal threshold, int score) {
         this.threshold = Objects.requireNonNull(threshold, "threshold must not be null");
