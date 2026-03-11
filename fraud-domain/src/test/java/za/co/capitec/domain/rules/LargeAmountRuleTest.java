@@ -21,8 +21,8 @@ class LargeAmountRuleTest {
                 "ACC-1",
                 new BigDecimal("15000"),
                 "Takalot",
-                "RSA",
-                "RSA",
+                "ZA",
+                "ZA",
                 Instant.now()
         );
 
@@ -42,8 +42,8 @@ class LargeAmountRuleTest {
                 "ACC-1",
                 new BigDecimal("9000"),
                 "Takalot",
-                "RSA",
-                "RSA",
+                "ZA",
+                "ZA",
                 Instant.now()
         );
 
