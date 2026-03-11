@@ -1,11 +1,14 @@
 package za.co.capitec.adapters;
 
+import io.opentelemetry.api.GlobalOpenTelemetry;
+import io.opentelemetry.api.trace.Tracer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -78,5 +81,9 @@ class TransactionHistoryAdapterIntegrationTest {
     @EntityScan(basePackageClasses = TransactionEntity.class)
     @Import(TransactionHistoryAdapter.class)
     static class TestConfig {
+        @Bean
+        Tracer tracer() {
+            return GlobalOpenTelemetry.getTracer("test-tracer");
+        }
     }
 }
