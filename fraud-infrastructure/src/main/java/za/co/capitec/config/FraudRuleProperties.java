@@ -24,7 +24,6 @@ public class FraudRuleProperties {
         private boolean enabled = true;
         private BigDecimal threshold = new BigDecimal("10000");
         private int score = 50;
-
     }
 
     @Setter
@@ -34,7 +33,6 @@ public class FraudRuleProperties {
         private long windowSeconds = 60;
         private long maxTransactions = 5;
         private int score = 30;
-
     }
 
     @Setter
@@ -42,7 +40,6 @@ public class FraudRuleProperties {
     public static class CountryMismatch {
         private boolean enabled = true;
         private int score = 40;
-
     }
 
     @Setter
@@ -51,6 +48,5 @@ public class FraudRuleProperties {
         private boolean enabled = true;
         private int score = 70;
         private List<String> merchants = new ArrayList<>();
-
     }
 }
