@@ -7,7 +7,7 @@ The system evaluates incoming financial transactions against configurable fraud 
 * Fraud checks (risk score + risk level)
 * Fraud alerts when suspicious activity is detected
 
-Rules are configurable via YAML, allowing risk policies to be adjusted without code changes.
+Rules are configurable via YAML, allowing risk policies to be adjusted **without code changes**.
 
 ---
 
@@ -15,29 +15,36 @@ Rules are configurable via YAML, allowing risk policies to be adjusted without c
 
 This project follows **Clean Architecture / Hexagonal Architecture** principles.
 
+```
 HTTP Request
-→ Controller (API)
-→ Use Case (Application)
-→ Domain Rules (Fraud Engine)
-→ Ports
-→ Infrastructure Adapters (JPA / Database)
+   ↓
+Controller (API)
+   ↓
+Use Case (Application)
+   ↓
+Domain Rules (Fraud Engine)
+   ↓
+Ports
+   ↓
+Infrastructure Adapters (JPA / Database)
+```
 
 ## Modules
 
-**fraud-domain**:
-Business rules and domain models
+**fraud-domain**
+Business rules and domain models.
 
-**fraud-application**:
-Use cases and port interfaces
+**fraud-application**
+Use cases and port interfaces.
 
-**fraud-infrastructure**:
-Persistence adapters (JPA + database)
+**fraud-infrastructure**
+Persistence adapters (JPA + database).
 
-**fraud-api**:
-REST controllers and DTOs
+**fraud-api**
+REST controllers and DTOs.
 
-**fraud-boot**:
-Spring Boot application + configuration
+**fraud-boot**
+Spring Boot application and configuration.
 
 This structure ensures:
 
@@ -51,9 +58,11 @@ This structure ensures:
 
 Fraud rules are defined in:
 
+```
 fraud-boot/src/main/resources/fraud-rules.yml
+```
 
-Example:
+Example configuration:
 
 ```yaml
 fraud:
@@ -83,14 +92,13 @@ fraud:
 
 Example outcome:
 
-| Rule                | Score   |
-|---------------------|---------|
-| Large Amount        | 50      |
-| Country Mismatch    | 40      |
-| Blacklisted Merchant | 70     |
-|                     |         |
-| Total Risk Score    | **160** |
-| Risk Level          | **HIGH**|
+| Rule                 | Score    |
+| -------------------- | -------- |
+| Large Amount         | 50       |
+| Country Mismatch     | 40       |
+| Blacklisted Merchant | 70       |
+| **Total Risk Score** | **160**  |
+| **Risk Level**       | **HIGH** |
 
 ---
 
@@ -98,7 +106,9 @@ Example outcome:
 
 ## Submit Transaction
 
+```
 POST /transactions
+```
 
 Example request:
 
@@ -120,33 +130,7 @@ Example response:
   "riskScore": 160,
   "riskLevel": "HIGH",
   "fraudSuspected": true,
-  "evaluatedAt": "2026-03-10T20:52:27.908556195Z",
-  "ruleResults": [
-    {
-      "ruleName": "LARGE_AMOUNT",
-      "triggered": true,
-      "score": 50,
-      "reason": "Transaction amount exceeds threshold of 10000"
-    },
-    {
-      "ruleName": "VELOCITY",
-      "triggered": false,
-      "score": 0,
-      "reason": "Rule passed"
-    },
-    {
-      "ruleName": "COUNTRY_MISMATCH",
-      "triggered": true,
-      "score": 40,
-      "reason": "Transaction country does not match account home country"
-    },
-    {
-      "ruleName": "BLACKLISTED_MERCHANT",
-      "triggered": true,
-      "score": 70,
-      "reason": "Merchant is blacklisted"
-    }
-  ]
+  "evaluatedAt": "2026-03-10T20:52:27.908556195Z"
 }
 ```
 
@@ -154,68 +138,23 @@ Example response:
 
 ## Get Fraud Check
 
+```
 GET /transactions/{transactionId}/fraud-check
-
-Example response:
-```json
-{
-"transactionId": "a14fa832-3786-406d-b33a-2277365bc546",
-"riskScore": 160,
-"riskLevel": "HIGH",
-"fraudSuspected": true,
-"evaluatedAt": "2026-03-10T20:52:27.908556Z",
-"ruleResults": []
-}
 ```
 
 ---
 
 ## Get Fraud Alerts
 
+```
 GET /fraud-alerts
-
-Example response:
-
-```json
-[
-  {
-    "id": "8b5d8db9-8129-471f-94d9-793b425e88d1",
-    "transactionId": "a14fa832-3786-406d-b33a-2277365bc546",
-    "riskScore": 160,
-    "riskLevel": "HIGH",
-    "triggeredRules": [
-      "LARGE_AMOUNT",
-      "COUNTRY_MISMATCH",
-      "BLACKLISTED_MERCHANT"
-    ],
-    "createdAt": "2026-03-10T20:52:27.935983Z"
-  }
-]
 ```
 
 Optional filter:
 
-GET /fraud-alerts?transactionId={transactionId}
-
-Example response:
-
-```json
-[
-  {
-    "id": "8b5d8db9-8129-471f-94d9-793b425e88d1",
-    "transactionId": "a14fa832-3786-406d-b33a-2277365bc546",
-    "riskScore": 160,
-    "riskLevel": "HIGH",
-    "triggeredRules": [
-      "LARGE_AMOUNT",
-      "COUNTRY_MISMATCH",
-      "BLACKLISTED_MERCHANT"
-    ],
-    "createdAt": "2026-03-10T20:52:27.935983Z"
-  }
-]
 ```
-
+GET /fraud-alerts?transactionId={transactionId}
+```
 
 ---
 
@@ -245,58 +184,85 @@ docker-compose up --build
 
 Services:
 
-Fraud Engine → port 8080
-PostgreSQL → port 5432
-
-Database credentials:
-
-database: frauddb
-username: fraud
-password: fraud
+| Service        | Port        |
+| -------------- | ----------- |
+| Fraud Engine   | 8080        |
+| PostgreSQL     | 5432        |
+| Grafana        | 3000        |
+| OTLP Collector | 4317 / 4318 |
 
 ---
 
-# Example cURL Requests
+# OpenTelemetry
 
-Submit transaction:
+The application includes **OpenTelemetry tracing** to track fraud evaluation across the system.
 
-```
-curl -X POST http://localhost:8080/transactions \
--H "Content-Type: application/json" \
--d '{
-"accountId": "ACC-1",
-"amount": 15000,
-"merchant": "shady-store",
-"country": "US",
-"accountHomeCountry": "ZA"
-}'
-```
-
-Get alerts:
+Trace example:
 
 ```
-curl http://localhost:8080/fraud-alerts
+POST /transactions
+   ↓
+fraud.processTransaction
+   ↓
+Fraud rule evaluation
+   ↓
+Persist fraud_check
+   ↓
+Persist fraud_alert
 ```
 
-Get fraud check:
+Configuration example:
 
-```
-curl http://localhost:8080/transactions/{transactionId}/fraud-check
+```yaml
+otel:
+  service:
+    name: fraud-engine
+  exporter:
+    otlp:
+      endpoint: http://localhost:4318
 ```
 
 ---
 
-# Database Schema
+# Grafana Observability Stack
 
-Flyway migrations create:
+The project includes a **local observability stack** using Docker.
 
-transactions,fraud_checks and fraud_alerts tables
+Components:
+
+| Component  | Purpose             |
+| ---------- | ------------------- |
+| Grafana    | Dashboards          |
+| Tempo      | Distributed tracing |
+| Prometheus | Metrics collection  |
+| Loki       | Logs                |
+
+Grafana UI:
+
+```
+http://localhost:3000
+```
+
+Default login:
+
+```
+admin
+admin
+```
+
+---
+
+## Prometheus Metrics
+
+Metrics endpoint:
+
+```
+http://localhost:8080/actuator/prometheus
+```
 
 ---
 
 # Testing Strategy
-
-Tests are structured by architecture layer.
 
 ### Domain Tests
 
@@ -304,8 +270,8 @@ Validate fraud rules independently.
 
 Examples:
 
-VelocityRuleTest
-LargeAmountRuleTest
+* VelocityRuleTest
+* LargeAmountRuleTest
 
 ### Application Tests
 
@@ -313,7 +279,7 @@ Verify use case orchestration with mocked ports.
 
 Example:
 
-ProcessTransactionUseCaseTest
+* ProcessTransactionUseCaseTest
 
 ### Infrastructure Tests
 
@@ -321,74 +287,36 @@ Verify persistence adapters and database queries.
 
 Example:
 
-TransactionHistoryAdapterIntegrationTest
+* TransactionHistoryAdapterIntegrationTest
 
 ### API Tests
 
 Run against the full Spring Boot application context.
 
-Located in:
+Location:
 
-fraud-boot/src/test
-
-Example tests:
-
-TransactionControllerApiTest
-FraudQueryControllerApiTest
-
-These tests validate the full flow:
-
-HTTP → Controller → Use Case → Infrastructure → Database
-
----
-
-# Velocity Fraud Rule
-
-Detects rapid transaction bursts.
-
-Example configuration:
-
-```yaml
-velocity:
-  window-seconds: 60
-  max-transactions: 5
 ```
-
-If more than 5 transactions occur within 60 seconds, the rule triggers.
+fraud-boot/src/test
+```
 
 ---
 
 # Technology Stack
 
-Java 17,
-Spring Boot,
-Spring Data JPA,
-PostgreSQL,
-Flyway,
-Docker,
-JUnit 5 and 
-MockMvc
-
----
-
-# Design Decisions
-
-* Clean Architecture to isolate business rules
-* Fraud rules configurable via YAML
-* Ports & Adapters to decouple persistence
-* Multi-module Maven structure
-
----
-
-# Future Improvements
-
-- Persist rule evaluation results
-- Add Kafka fraud event streaming
-- Add monitoring with Prometheus/Grafana
-- Add fraud analytics dashboard
+* Java 17
+* Spring Boot
+* Spring Data JPA
+* PostgreSQL
+* Flyway
+* Docker
+* JUnit 5
+* MockMvc
+* OpenTelemetry
+* Micrometer / Prometheus
+* Grafana
 
 ---
 
 # Author
-Sandile Mbatha
 
+Sandile Mbatha
