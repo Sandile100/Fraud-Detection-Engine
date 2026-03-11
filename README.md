@@ -83,16 +83,14 @@ fraud:
 
 Example outcome:
 
-Rule                    | Score
-
-Large Amount            | 50
-
-Country Mismatch        | 40
-
-Blacklisted Merchant    | 70
-
-Total Risk Score = **160**
-Risk Level = **HIGH**
+| Rule                | Score   |
+|---------------------|---------|
+| Large Amount        | 50      |
+| Country Mismatch    | 40      |
+| Blacklisted Merchant | 70     |
+|                     |         |
+| Total Risk Score    | **160** |
+| Risk Level          | **HIGH**|
 
 ---
 
