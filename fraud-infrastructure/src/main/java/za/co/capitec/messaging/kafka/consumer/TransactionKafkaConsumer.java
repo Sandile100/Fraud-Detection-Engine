@@ -23,7 +23,7 @@ public class TransactionKafkaConsumer {
 
     @KafkaListener(
             topics = "${app.kafka.topics.transactions}",
-            groupId = "${spring.kafka.consumer.group-id}",
+            groupId = "fraud-engine-group",//"${spring.kafka.consumer.group-id}",
             containerFactory = "transactionKafkaListenerContainerFactory"
     )
     @Transactional
