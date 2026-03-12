@@ -44,3 +44,18 @@ logging:
     root: INFO
     org.springframework.web: INFO
     org.hibernate.SQL: INFO
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: fraud-engine-group
+      auto-offset-reset: earliest
+      properties:
+        spring.json.trusted.packages: "*"
+    producer:
+      acks: all
+
+  app:
+    kafka:
+      topics:
+        transactions: fraud.transactions.v1
