@@ -1,6 +1,7 @@
-# Capitec Fraud Detection Engine
+# Fraud Detection Engine
 
-A modular **Fraud Rule Engine** built with **Java 17, Spring Boot, DDD, and Clean Architecture**.
+A modular, production-style fraud detection platform built with **Spring Boot**, **Clean Architecture**, and **Domain-Driven Design (DDD)** principles.
+The system evaluates transactions against configurable fraud rules and persists fraud decisions and alerts.
 
 The system evaluates incoming financial transactions against configurable fraud rules and produces:
 
@@ -9,6 +10,12 @@ The system evaluates incoming financial transactions against configurable fraud 
 
 Rules are configurable via YAML, allowing risk policies to be adjusted **without code changes**.
 
+The project demonstrates how a fraud detection engine can be designed to be:
+
+* Modular
+* Event-driven
+* Testable
+* Extensible for real banking systems
 ---
 
 # Architecture
@@ -16,29 +23,55 @@ Rules are configurable via YAML, allowing risk policies to be adjusted **without
 This project follows **Clean Architecture / Hexagonal Architecture** principles.
 
 ```
-HTTP Request
-   ↓
-Controller (API)
-   ↓
-Use Case (Application)
-   ↓
-Domain Rules (Fraud Engine)
-   ↓
-Ports
-   ↓
-Infrastructure Adapters (JPA / Database + Kafka)
+                +----------------------+
+                |      REST API        |
+                |  TransactionController|
+                +-----------+----------+
+                            |
+                            v
+                +----------------------+
+                |   Application Layer  |
+                | ProcessTransactionUseCase
+                +-----------+----------+
+                            |
+                            v
+                +----------------------+
+                |      Domain Layer    |
+                | Fraud Rules Engine   |
+                +-----------+----------+
+                            |
+                            v
+                +----------------------+
+                |   Infrastructure     |
+                | PostgreSQL / Kafka   |
+                +----------------------+
 ```
 
-## Modules
+---
 
-**fraud-domain**
-Business rules and domain models.
+# Project Modules
 
-**fraud-application**
-Use cases and port interfaces.
+```
+fraud-detection-engine
+├── fraud-domain
+│   └── Core fraud detection rules and domain models
+│
+├── fraud-application
+│   └── Application use cases and command objects
+│
+├── fraud-api
+│   └── REST controllers and request/response DTOs
+│
+├── fraud-infrastructure
+│   └── Persistence adapters and Kafka messaging
+│
+├── fraud-boot
+│   └── Spring Boot runtime and configuration
+│
+└── docker-compose.yml
+```
 
-**fraud-infrastructure**
-Persistence adapters (JPA + database).
+---
 
 **fraud-api**
 REST controllers and DTOs.
@@ -225,7 +258,7 @@ otel:
 
 ---
 
-# Grafana Observability Stack
+# Observability
 
 The project includes a **local observability stack** using Docker.
 
@@ -299,8 +332,6 @@ Location:
 ```
 fraud-boot/src/test
 ```
-
----
 
 ---
 
