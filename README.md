@@ -1,108 +1,105 @@
-# Capitec Fraud Detection Engine
+# Fraud Detection Engine
 
-A modular **Fraud Rule Engine** built with **Java 17, Spring Boot, DDD, and Clean Architecture**.
+A modular, production-style fraud detection platform built with **Spring Boot**, **Clean Architecture**, and **Domain-Driven Design (DDD)** principles.
+The system evaluates transactions against configurable fraud rules and persists fraud decisions and alerts.
 
-The system evaluates incoming financial transactions against configurable fraud rules and produces:
+The project demonstrates how a fraud detection engine can be designed to be:
 
-* Fraud checks (risk score + risk level)
-* Fraud alerts when suspicious activity is detected
-
-Rules are configurable via YAML, allowing risk policies to be adjusted **without code changes**.
+* Modular
+* Event-driven
+* Testable
+* Extensible for real banking systems
 
 ---
 
 # Architecture
 
-This project follows **Clean Architecture / Hexagonal Architecture** principles.
+The system follows **Clean Architecture / Hexagonal Architecture**, separating domain logic from infrastructure and adapters.
 
 ```
-HTTP Request
-   ↓
-Controller (API)
-   ↓
-Use Case (Application)
-   ↓
-Domain Rules (Fraud Engine)
-   ↓
-Ports
-   ↓
-Infrastructure Adapters (JPA / Database)
+                +----------------------+
+                |      REST API        |
+                |  TransactionController|
+                +-----------+----------+
+                            |
+                            v
+                +----------------------+
+                |   Application Layer  |
+                | ProcessTransactionUseCase
+                +-----------+----------+
+                            |
+                            v
+                +----------------------+
+                |      Domain Layer    |
+                | Fraud Rules Engine   |
+                +-----------+----------+
+                            |
+                            v
+                +----------------------+
+                |   Infrastructure     |
+                | PostgreSQL / Kafka   |
+                +----------------------+
 ```
 
-## Modules
+---
 
-**fraud-domain**
-Business rules and domain models.
+# Project Modules
 
-**fraud-application**
-Use cases and port interfaces.
+```
+fraud-detection-engine
+├── fraud-domain
+│   └── Core fraud detection rules and domain models
+│
+├── fraud-application
+│   └── Application use cases and command objects
+│
+├── fraud-api
+│   └── REST controllers and request/response DTOs
+│
+├── fraud-infrastructure
+│   └── Persistence adapters and Kafka messaging
+│
+├── fraud-boot
+│   └── Spring Boot runtime and configuration
+│
+└── docker-compose.yml
+```
 
-**fraud-infrastructure**
-Persistence adapters (JPA + database).
+---
 
-**fraud-api**
-REST controllers and DTOs.
+# Domain Concepts
 
-**fraud-boot**
-Spring Boot application and configuration.
+### Transaction
 
-This structure ensures:
+Represents a financial activity initiated by a customer.
 
-* Domain logic is independent of frameworks
-* Infrastructure is replaceable
-* The system is testable and maintainable
+### Fraud Check
+
+Represents an evaluation of a transaction against fraud rules.
+
+### Fraud Alert
+
+Generated when a rule violation indicates potential fraud.
 
 ---
 
 # Fraud Rules
 
-Fraud rules are defined in:
+Example rules implemented:
 
-```
-fraud-boot/src/main/resources/fraud-rules.yml
-```
+| Rule                | Description                             |
+| ------------------- | --------------------------------------- |
+| High Amount         | Flags transactions above threshold      |
+| Foreign Transaction | Flags transactions outside home country |
+| Suspicious Merchant | Flags transactions with risky merchants |
 
-Example configuration:
-
-```yaml
-fraud:
-  rules:
-    large-amount:
-      enabled: true
-      threshold: 10000
-      score: 50
-
-    velocity:
-      enabled: true
-      window-seconds: 60
-      max-transactions: 5
-      score: 30
-
-    country-mismatch:
-      enabled: true
-      score: 40
-
-    blacklisted-merchant:
-      enabled: true
-      score: 70
-      merchants:
-        - shady-store
-        - scam-pay
-```
-
-Example outcome:
-
-| Rule                 | Score    |
-| -------------------- | -------- |
-| Large Amount         | 50       |
-| Country Mismatch     | 40       |
-| Blacklisted Merchant | 70       |
-| **Total Risk Score** | **160**  |
-| **Risk Level**       | **HIGH** |
+Rules can be extended by adding new domain services.
 
 ---
 
-# API Endpoints
+# REST API
+
+Transactions can be submitted synchronously via HTTP.
 
 ## Submit Transaction
 
@@ -110,7 +107,7 @@ Example outcome:
 POST /transactions
 ```
 
-Example request:
+### Example Request
 
 ```json
 {
@@ -122,201 +119,250 @@ Example request:
 }
 ```
 
-Example response:
+### Example Response
 
 ```json
 {
-  "transactionId": "a14fa832-3786-406d-b33a-2277365bc546",
-  "riskScore": 160,
-  "riskLevel": "HIGH",
-  "fraudSuspected": true,
-  "evaluatedAt": "2026-03-10T20:52:27.908556195Z"
+  "status": "FLAGGED",
+  "alerts": [
+    "HIGH_AMOUNT",
+    "FOREIGN_TRANSACTION"
+  ]
 }
 ```
 
 ---
 
-## Get Fraud Check
+# Kafka Integration
+
+The fraud detection engine also supports **asynchronous transaction ingestion using Apache Kafka**.
+
+This allows the system to process transactions from multiple banking channels such as:
+
+* ATM
+* Branch systems
+* Merchant / POS terminals
+* Mobile banking
+* Payment processors
+* Card networks
+
+Kafka enables the system to scale horizontally and process large volumes of transactions in real time.
+
+## Kafka Architecture
 
 ```
-GET /transactions/{transactionId}/fraud-check
+External Channels
+     |
+     v
++---------------------+
+|     Kafka Topics    |
+| fraud.transactions  |
++----------+----------+
+           |
+           v
++---------------------------+
+| TransactionKafkaConsumer  |
++-------------+-------------+
+              |
+              v
++---------------------------+
+| ProcessTransactionUseCase |
++-------------+-------------+
+              |
+              v
++---------------------------+
+| Fraud Detection Engine    |
++-------------+-------------+
+              |
+              v
++---------------------------+
+| PostgreSQL Persistence    |
++---------------------------+
+```
+
+Kafka acts as **an additional inbound adapter** while preserving the core application and domain layers.
+
+Both REST and Kafka ingestion paths invoke the same application use case.
+
+---
+
+# Kafka Event Model
+
+Kafka messages contain transaction data and metadata describing the source of the event.
+
+Example Kafka event:
+
+```json
+{
+  "eventId": "evt-001",
+  "source": "ATM",
+  "occurredAt": "2026-03-12T10:15:00Z",
+  "transaction": {
+    "accountId": "ACC-123",
+    "amount": 15000,
+    "merchant": "shady-store",
+    "country": "US",
+    "accountHomeCountry": "ZA"
+  }
+}
 ```
 
 ---
 
-## Get Fraud Alerts
+# Kafka Topics
+
+| Topic                    | Description                         |
+| ------------------------ | ----------------------------------- |
+| `fraud.transactions.v1`  | Incoming transaction events         |
+| `fraud.transactions.dlq` | Dead-letter queue for failed events |
+
+---
+
+# Idempotency Handling
+
+Kafka consumers may reprocess messages during retries or partition rebalancing.
+
+To prevent duplicate fraud checks, the system implements **idempotent event processing** using a `processed_event` table.
+
+Each event contains a unique `eventId`.
+
+Processing flow:
 
 ```
-GET /fraud-alerts
-```
-
-Optional filter:
-
-```
-GET /fraud-alerts?transactionId={transactionId}
+Kafka Event Received
+        |
+        v
+Check processed_event table
+        |
+        +-- Already processed → ignore
+        |
+        +-- Not processed → process transaction
+                               |
+                               v
+                     Save eventId to table
 ```
 
 ---
 
-# Running the Application
+# Database Schema
 
-## Run with Maven
+### processed_event
 
-```
-mvn clean install
-cd fraud-boot
-mvn spring-boot:run
-```
-
-Application runs on:
-
-```
-http://localhost:8080
-```
-
----
-
-# Running with Docker
-
-```
-docker-compose up --build
-```
-
-Services:
-
-| Service        | Port        |
-| -------------- | ----------- |
-| Fraud Engine   | 8080        |
-| PostgreSQL     | 5432        |
-| Grafana        | 3000        |
-| OTLP Collector | 4317 / 4318 |
-
----
-
-# OpenTelemetry
-
-The application includes **OpenTelemetry tracing** to track fraud evaluation across the system.
-
-Trace example:
-
-```
-POST /transactions
-   ↓
-fraud.processTransaction
-   ↓
-Fraud rule evaluation
-   ↓
-Persist fraud_check
-   ↓
-Persist fraud_alert
-```
-
-Configuration example:
-
-```yaml
-otel:
-  service:
-    name: fraud-engine
-  exporter:
-    otlp:
-      endpoint: http://localhost:4318
-```
-
----
-
-# Grafana Observability Stack
-
-The project includes a **local observability stack** using Docker.
-
-Components:
-
-| Component  | Purpose             |
-| ---------- | ------------------- |
-| Grafana    | Dashboards          |
-| Tempo      | Distributed tracing |
-| Prometheus | Metrics collection  |
-| Loki       | Logs                |
-
-Grafana UI:
-
-```
-http://localhost:3000
-```
-
-Default login:
-
-```
-admin
-admin
-```
-
----
-
-## Prometheus Metrics
-
-Metrics endpoint:
-
-```
-http://localhost:8080/actuator/prometheus
-```
+| Column       | Description             |
+| ------------ | ----------------------- |
+| event_id     | Unique event identifier |
+| source       | Event origin channel    |
+| processed_at | Processing timestamp    |
 
 ---
 
 # Testing Strategy
 
-### Domain Tests
+Kafka integration includes multiple test layers.
 
-Validate fraud rules independently.
+### Unit Tests
 
-Examples:
-
-* VelocityRuleTest
-* LargeAmountRuleTest
-
-### Application Tests
-
-Verify use case orchestration with mocked ports.
+Test the Kafka consumer logic independently.
 
 Example:
 
-* ProcessTransactionUseCaseTest
-
-### Infrastructure Tests
-
-Verify persistence adapters and database queries.
-
-Example:
-
-* TransactionHistoryAdapterIntegrationTest
-
-### API Tests
-
-Run against the full Spring Boot application context.
-
-Location:
-
 ```
-fraud-boot/src/test
+TransactionKafkaConsumerTest
 ```
+
+Validates:
+
+* correct mapping of Kafka messages
+* invocation of application use case
+* duplicate event handling
 
 ---
 
-# Technology Stack
+### Integration Tests
 
-* Java 17
-* Spring Boot
-* Spring Data JPA
-* PostgreSQL
-* Flyway
-* Docker
-* JUnit 5
-* MockMvc
+Kafka integration tests use **Embedded Kafka** to simulate a real broker.
+
+Example:
+
+```
+TransactionKafkaIntegrationTest
+```
+
+Validates:
+
+* Kafka listener wiring
+* event consumption
+* fraud processing pipeline
+* idempotency behavior
+
+---
+
+# Running the Project
+
+Start infrastructure services:
+
+```
+docker-compose up --build
+```
+
+Services started:
+
+| Service      | Port |
+| ------------ | ---- |
+| Fraud Engine | 8080 |
+| PostgreSQL   | 5432 |
+| Kafka        | 9092 |
+| Grafana LGTM | 3000 |
+
+---
+
+# Observability
+
+The platform includes observability tooling using the **Grafana LGTM stack**.
+
+Components:
+
 * OpenTelemetry
-* Micrometer / Prometheus
+* Prometheus
+* Loki
 * Grafana
+
+This enables monitoring of:
+
+* fraud rule evaluation
+* transaction throughput
+* Kafka consumer lag
+* database performance
+
+---
+
+# Design Goals
+
+This project demonstrates how to build a fraud detection system that is:
+
+* Event-driven
+* Domain-driven
+* Horizontally scalable
+* Highly testable
+* Infrastructure-agnostic
+
+---
+
+# Future Enhancements
+
+Potential improvements include:
+
+* rule engine configuration via database
+* machine learning fraud models
+* streaming analytics
+* rule DSL for fraud policies
+* real-time alert notifications
+* Kafka Streams risk scoring
+* distributed transaction enrichment
 
 ---
 
 # Author
 
 Sandile Mbatha
+
