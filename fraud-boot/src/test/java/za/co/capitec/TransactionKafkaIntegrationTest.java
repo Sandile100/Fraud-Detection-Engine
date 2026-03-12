@@ -16,15 +16,14 @@ import za.co.capitec.persistence.JpaFraudCheckRepository;
 import za.co.capitec.persistence.ProcessedEventJpaRepository;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 
-import java.time.Duration;
-
-@SpringBootTest
+@SpringBootTest(properties = "spring.profiles.active=test")
 @EmbeddedKafka(partitions = 1, topics = {"fraud.transactions.v1"})
 class TransactionKafkaIntegrationTest {
 
@@ -43,13 +42,14 @@ class TransactionKafkaIntegrationTest {
     @DynamicPropertySource
     static void kafkaProperties(DynamicPropertyRegistry registry) {
         registry.add("app.kafka.topics.transactions", () -> "fraud.transactions.v1");
+        registry.add("management.otlp.metrics.export.enabled", () -> "false");
     }
 
     @AfterEach
     void cleanUp() {
-        processedEventJpaRepository.deleteAll();
-        jpaFraudCheckRepository.deleteAll();
         jpaFraudAlertRepository.deleteAll();
+        jpaFraudCheckRepository.deleteAll();
+        processedEventJpaRepository.deleteAll();
     }
 
     @Test
@@ -111,7 +111,7 @@ class TransactionKafkaIntegrationTest {
                 .untilAsserted(() -> {
                     assertThat(processedEventJpaRepository.count()).isEqualTo(1);
                     assertThat(jpaFraudCheckRepository.count()).isEqualTo(1);
-                    assertThat(jpaFraudCheckRepository.count()).isEqualTo(1);
+                    assertThat(jpaFraudAlertRepository.count()).isEqualTo(1);
                 });
     }
 }

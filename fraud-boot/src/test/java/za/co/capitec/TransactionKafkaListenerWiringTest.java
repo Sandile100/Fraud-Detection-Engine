@@ -2,10 +2,8 @@ package za.co.capitec;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -43,7 +41,7 @@ class TransactionKafkaListenerWiringTest {
     }
 
     @Test
-    @Timeout(30)
+    @Timeout(20)
     void shouldInvokeUseCaseWhenKafkaMessageArrives() {
         String eventId = UUID.randomUUID().toString();
 
