@@ -14,9 +14,8 @@ import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest(classes = FraudEngineApplication.class)
+@SpringBootTest(classes = FraudEngineApplication.class, properties = "spring.profiles.active=test")
 @AutoConfigureMockMvc
-@ActiveProfiles("test")
 @Transactional
 class TransactionControllerApiTest {
 

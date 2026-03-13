@@ -80,3 +80,26 @@ Content-Type: application/json
   "country": "ZA",
   "accountHomeCountry": "ZA"
 }
+
+### ============================================
+### 7. Test Kafka transactions
+### Run this several times quickly
+### ============================================
+
+POST {{host}}/kafka-test/transactions
+Content-Type: application/json
+
+{
+  "eventId": "evt-001",
+  "source": "ATM",
+  "occurredAt": "2026-03-12T10:15:00Z",
+  "transactionRequest": {
+    "accountId": "ACC-123",
+    "amount": 15000,
+    "merchant": "shady-store",
+    "country": "US",
+    "accountHomeCountry": "ZA"
+  }
+}
+
+
